@@ -98,6 +98,7 @@ function draw() {
         // }
 	}
     fill(255);
+    
 	text("QRCode : " + QRString, 10, debuggingArea + 95);
     text("Server URL : ", 10, debuggingArea + 35);
 
