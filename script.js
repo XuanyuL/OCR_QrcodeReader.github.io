@@ -44,10 +44,14 @@ function setup() {
 
     connectButton = createButton("connect");
     connectButton.position(300, debuggingArea + 20);
+    connectButton.style('width', '75px');  // Set width of button
+    connectButton.style('height', '35px');  // Set height of button
     connectButton.mousePressed(connectSocket);
 
     sendQRButton = createButton("sendQR");
-    sendQRButton.position(300, debuggingArea + 50);
+    sendQRButton.position(300, debuggingArea + 190);
+    sendQRButton.style('width', '75px');  // Set width of button
+    sendQRButton.style('height', '35px');  // Set height of button
     sendQRButton.mousePressed(sendQRString);
 
     server = createInput();
@@ -71,9 +75,12 @@ function draw() {
     clear();
     background(0);
 
+    // let resizedCap = capture.get(capture.width / 2 - appWidth / 2, capture.height / 2 - debuggingArea / 2, appWidth, debuggingArea);
     let resizedCap = capture.get(0,0, appWidth, debuggingArea);
 
+	// image(capture, 0, 0, capture.width, capture.height);
     image(resizedCap, 0, 0);
+	// image(capture, 0, 0);
 
     fill(0);
     rect(0, debuggingArea - 20, appWidth, appHeight);
@@ -81,47 +88,23 @@ function draw() {
     fill(0);
     textSize(20);
     text("Custom Server URL", 10, 35);
-    let code = getCodeFromCapture(capture, captureGraphic);
-    if (code) {
+	let code = getCodeFromCapture(capture, captureGraphic);
+	if (code) {
+		// text(code.data, 10, appHeight - 10);
         QRString = code.data;
-    }
-    
-    fill(255); // 重新添加了这一行
-    // 检查 QRString 是否已定义
-    if (QRString) {
-        // 分割字符串
-        let QRTexts = QRString.split(";");
+		// text("QRCode : " + QRString.data, 10, debuggingArea + 10);
+        // if(socketCondition == 1){
+        //     socket.send(code.data);
+        // }
+	}
+    fill(255);
+	text("QRCode : " + QRString, 10, debuggingArea + 95);
+    text("Server URL : ", 10, debuggingArea + 35);
 
-        // 计算每行文本的起始高度
-        let startHeight = debuggingArea + 95;
+    checkSocket();
+    text(socketCondition, 10, debuggingArea + 65);
 
-        // 检查是否有足够的元素
-        if (QRTexts.length >= 3) {
-            // 遍历文本数组，逐行显示
-            text("       ID        : " + QRTexts[0], 10, startHeight + 0);  
-            text("Discription : " + QRTexts[1], 10, startHeight + 30);
-            // 创建一个超链接并设置其位置
-            text("ImageLink   : ", 10, startHeight + 90);
-            let link = createA(QRTexts[2], QRTexts[2], "_blank");
-            link.position(10, startHeight + 110);
-        } else {
-            text("QRCode seems have some error ", 10, startHeight + 0);
-        }
-
-        text("Server URL : ", 10, debuggingArea + 35);
-
-        checkSocket();
-        text(socketCondition, 10, debuggingArea + 65);
-    }
-    else{
-        text("Server URL : ", 10, debuggingArea + 35);
-        checkSocket();
-        text(socketCondition, 10, debuggingArea + 65);
-    }
 }
-
-
-
 
 function connectSocket(){
     socket = new WebSocket(server.value());
